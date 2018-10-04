@@ -15,7 +15,7 @@ pub fn diorama(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     output.into()
 }
 
-#[proc_macro_derive(UrlParams)]
+#[proc_macro_derive(UrlParams, attributes(path))]
 pub fn url_params(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
 
