@@ -6,20 +6,18 @@ extern crate syn;
 #[macro_use]
 extern crate quote;
 
-use syn::*;
-
 #[proc_macro_derive(StringStructFromLit)]
 pub fn string_struct_from_lit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: DeriveInput = parse_macro_input!(input as DeriveInput);
+    let input: syn::DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let name = &input.ident;
     let name_str = &ident_to_litstr(&input.ident);
 
     let output = quote! {
         impl #name {
-            fn from_lit(lit: &Lit) -> Result<Self, String> {
+            fn from_lit(lit: &syn::Lit) -> Result<Self, String> {
                 let str = match lit {
-                    Lit::Str(s) => Some(s.value()),
+                    syn::Lit::Str(s) => Some(s.value()),
                     _ => None
                 };
                 match str {
@@ -37,17 +35,17 @@ pub fn string_struct_from_lit(input: proc_macro::TokenStream) -> proc_macro::Tok
 
 #[proc_macro_derive(EnumFromLit)]
 pub fn enum_from_lit(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: DeriveInput = parse_macro_input!(input as DeriveInput);
+    let input: syn::DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let name = &input.ident;
     let name_str = &ident_to_litstr(&input.ident);
     let body = input.data;
 
-    let mut default_value= Ident::new("Uninitialized", proc_macro2::Span::call_site());
+    let mut default_value= syn::Ident::new("Uninitialized", proc_macro2::Span::call_site());
 
     let mut match_body = quote!{};
     match body {
-        Data::Enum(data) => {
+        syn::Data::Enum(data) => {
             let fields = data.variants;
             for field in fields {
                 let field_ident = &field.ident;
@@ -67,9 +65,9 @@ pub fn enum_from_lit(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
     let output = quote! {
         impl #name {
-            fn from_lit(lit: &Lit) -> Result<Self, String> {
+            fn from_lit(lit: &syn::Lit) -> Result<Self, String> {
                 let str = match lit {
-                    Lit::Str(s) => Some(s.value()),
+                    syn::Lit::Str(s) => Some(s.value()),
                     _ => None
                 };
                 match &str.unwrap()[..] {
@@ -87,7 +85,7 @@ pub fn enum_from_lit(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
 
 #[proc_macro_derive(StructFromAttrs, attributes(default))]
 pub fn struct_from_attrs(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: DeriveInput = parse_macro_input!(input as DeriveInput);
+    let input: syn::DeriveInput = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let name = &input.ident;
     let name_str = &ident_to_litstr(&input.ident);
@@ -98,7 +96,7 @@ pub fn struct_from_attrs(input: proc_macro::TokenStream) -> proc_macro::TokenStr
     let mut variant_body = quote! {};
 
     match body {
-        Data::Struct(data) => {
+        syn::Data::Struct(data) => {
             let fields = data.fields.iter();
             for field in fields {
                 let attrs = &field.attrs;
@@ -131,12 +129,12 @@ pub fn struct_from_attrs(input: proc_macro::TokenStream) -> proc_macro::TokenStr
 
     let output = quote! {
         impl #name {
-            pub fn from_attrs(attrs: &Vec<Attribute>) -> Result<Self, String> {
+            pub fn from_attrs(attrs: &Vec<syn::Attribute>) -> Result<Self, String> {
                 #initial_part
                 for attr in attrs {
                     let meta = attr.interpret_meta().unwrap();
                     match meta {
-                        Meta::NameValue(meta_name_value) => {
+                        syn::Meta::NameValue(meta_name_value) => {
                             match meta_name_value.ident.to_string().as_ref() {
                                 #match_body
                                 _ => {
@@ -158,6 +156,6 @@ pub fn struct_from_attrs(input: proc_macro::TokenStream) -> proc_macro::TokenStr
     output.into()
 }
 
-fn ident_to_litstr(ident: &Ident) -> LitStr {
-    LitStr::new(&ident.to_string()[..], proc_macro2::Span::call_site())
+fn ident_to_litstr(ident: &syn::Ident) -> syn::LitStr {
+    syn::LitStr::new(&ident.to_string()[..], proc_macro2::Span::call_site())
 }

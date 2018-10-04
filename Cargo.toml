@@ -1,17 +1,10 @@
 [package]
-name = "diorama"
+name = "diorama-example"
 version = "0.1.0"
 authors = ["Yang Keao <keao.yang@yahoo.com>"]
 edition = "2018"
 
 [dependencies]
-syn = "0.15"
-quote = "0.6"
-proc-macro2 = "0.4"
+diorama = { path = "./diorama" }
+diorama_derive = { path = "./diorama_derive" }
 reqwest = "0.9.2"
-parse_utils = { path = "./parse_utils" }
-url_params = { path = "./url_params" }
-
-[lib]
-crate-type = ["proc-macro"]
-proc_macro = true

@@ -1,14 +1,4 @@
-#![recursion_limit="128"]
-extern crate proc_macro;
-extern crate proc_macro2;
 extern crate syn;
-
-#[macro_use]
-extern crate quote;
-#[macro_use]
-extern crate parse_utils;
-
-use syn::*;
 
 #[derive(StringStructFromLit)]
 struct UrlPath (pub String);
@@ -17,17 +7,14 @@ struct UrlParamsArgs {
     path: UrlPath,
 }
 
-#[proc_macro_derive(UrlParams)]
-pub fn url_params(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: DeriveInput = parse_macro_input!(input as DeriveInput);
-
+pub fn impl_make_path(input: syn::DeriveInput) -> proc_macro2::TokenStream {
     let name = input.ident;
     let body = input.data;
     let attrs = input.attrs;
 
     let mut params = quote!{};
     match body {
-        Data::Struct(data) => {
+        syn::Data::Struct(data) => {
             let fields = data.fields.iter();
             for field in fields {
                 let attrs = &field.attrs;
@@ -46,9 +33,9 @@ pub fn url_params(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let UrlParamsArgs { path: UrlPath(path)} = &UrlParamsArgs::from_attrs(&attrs).unwrap();
 
     let output = quote! {
-        impl #name {
+        impl diorama::UrlParams for #name {
             fn make_path(&self) -> String {
-                format!(#path #params).unwrap()
+                format!(#path #params)
             }
         }
     };
