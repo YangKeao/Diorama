@@ -3,13 +3,16 @@ extern crate proc_macro;
 extern crate proc_macro2;
 extern crate syn;
 
+#[macro_use]
+extern crate parse_utils;
+
+#[macro_use]
+extern crate quote;
+
 mod request;
 use self::request::*;
 mod utils;
 use self::utils::*;
-
-#[macro_use]
-extern crate quote;
 
 use syn::*;
 
