@@ -8,9 +8,6 @@ pub struct ClientMeta {
     pub base_url: BaseUrl
 }
 
-#[derive(StringStructFromLit)]
-pub struct UrlPath (pub String);
-
 #[derive(EnumFromLit)]
 pub enum Method {
     GET,
@@ -37,6 +34,5 @@ pub enum Parser {
 #[derive(StructFromAttrs)]
 pub struct RequestMeta {
     pub method: Method,
-    pub path: UrlPath,
     pub parser: Parser
 }

@@ -1,5 +1,5 @@
 [package]
-name = "diorama"
+name = "url_params"
 version = "0.1.0"
 authors = ["Yang Keao <keao.yang@yahoo.com>"]
 edition = "2018"
@@ -8,9 +8,7 @@ edition = "2018"
 syn = "0.15"
 quote = "0.6"
 proc-macro2 = "0.4"
-reqwest = "0.9.2"
-parse_utils = { path = "./parse_utils" }
-url_params = { path = "./url_params" }
+parse_utils = { path = "../parse_utils" }
 
 [lib]
 crate-type = ["proc-macro"]

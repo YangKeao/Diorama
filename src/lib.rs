@@ -5,14 +5,13 @@ extern crate syn;
 
 #[macro_use]
 extern crate parse_utils;
-
+#[macro_use]
+extern crate url_params;
 #[macro_use]
 extern crate quote;
 
 mod request;
 use self::request::*;
-mod utils;
-use self::utils::*;
 
 use syn::*;
 
@@ -45,7 +44,6 @@ pub fn diorama(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             &client_meta,
                             &req_meta,
                             &ident,
-                            &fun.inputs,
                             &fun.output,
                         );
                         impl_body = quote! {
@@ -56,7 +54,6 @@ pub fn diorama(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                             &client_meta,
                             &req_meta,
                             &ident,
-                            &fun.inputs,
                             &fun.output,
                         );
                         field_body = quote! {
@@ -70,11 +67,8 @@ pub fn diorama(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
                 }
             }
         }
-        Data::Enum(_data) => {
-
-        }
-        Data::Union(_data) => {
-
+        _ => {
+            panic!("Only Struct is supported for derive(Diorama)")
         }
     }
 
@@ -96,27 +90,13 @@ pub fn diorama(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 fn impl_request(client_meta: &ClientMeta,
                 req_meta: &RequestMeta,
                 ident: &Ident,
-                inputs: &punctuated::Punctuated<BareFnArg, token::Comma>,
                 returns: &ReturnType) -> proc_macro2::TokenStream {
     let method = req_meta.method.to_ident();
-    let UrlPath( path ) = &req_meta.path;
     let BaseUrl( base_url) = &client_meta.base_url;
 
-    let mut url_params = quote! ();
-    for arg in inputs {
-        let name = &arg.name.as_ref().unwrap().0;
-        match name {
-            BareFnArgName::Named(ident) => {
-                url_params = quote! (#url_params, #ident = #ident);
-            }
-            _ => {
-                println!("ERROR")
-            }
-        }
-    }
     quote! {
-        fn #ident (&self, #inputs, body: &'static str) -> Result<String, reqwest::Error> {
-            let url = &format!("{}{}", #base_url, format!(#path #url_params))[..];
+        fn #ident (&self, url_params: T, body: &'static str) -> Result<String, reqwest::Error> {
+            let url = &format!("{}{}", #base_url, url_params.make_path())[..];
             let client = reqwest::Client::new();
 
             let res = client.#method(url)
@@ -134,10 +114,9 @@ fn impl_request(client_meta: &ClientMeta,
 fn field_request(_: &ClientMeta,
                  _: &RequestMeta,
                  ident: &Ident,
-                 inputs: &punctuated::Punctuated<BareFnArg, token::Comma>,
                  returns: &ReturnType) -> proc_macro2::TokenStream {
     quote! {
-        #ident : |#inputs| #returns {
+        #ident : || #returns {
         },
     }
 }
