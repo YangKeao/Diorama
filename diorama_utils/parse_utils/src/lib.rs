@@ -25,7 +25,9 @@ pub fn string_struct_from_lit(input: proc_macro::TokenStream) -> proc_macro::Tok
                     None => Err(format!("Parse {} error. It is not a String", #name_str))
                 }
             }
-            fn new() -> Self {
+        }
+        impl Default for #name {
+            fn default() -> Self {
                 #name("".to_string())
             }
         }
@@ -75,7 +77,9 @@ pub fn enum_from_lit(input: proc_macro::TokenStream) -> proc_macro::TokenStream 
                     _ => Err(format!("Unknown {}", #name_str))
                 }
             }
-            fn new() -> Self {
+        }
+        impl Default for #name {
+            fn default() -> Self {
                 #name::#default_value
             }
         }
@@ -106,7 +110,7 @@ pub fn struct_from_attrs(input: proc_macro::TokenStream) -> proc_macro::TokenStr
 
                 initial_part = quote! {
                     #initial_part
-                    let mut #ident: #ty = #ty::new();
+                    let mut #ident: #ty = #ty::default();
                 };
 
                 match_body = quote! {
