@@ -22,7 +22,6 @@ pub fn impl_make_path(input: syn::DeriveInput) -> proc_macro2::TokenStream {
                 let ty = &field.ty;
 
                 params = quote! (#params, #ident = self.#ident);
-                println!("{}", params);
             }
         }
         _ => {
