@@ -25,20 +25,14 @@ impl Method {
 
 #[derive(EnumFromLit)]
 pub enum Deserializer {
-    Html,
-    Json
-}
-
-#[derive(EnumFromLit)]
-pub enum Serializer {
-    Json
+    Json,
+    Html
 }
 
 #[derive(StructFromAttrs)]
 pub struct RequestMeta {
     pub method: Method,
-    pub deserializer: Deserializer,
-    pub serializer: Serializer
+    pub deserializer: Deserializer
 }
 
 pub fn impl_request(client_meta: &ClientMeta,

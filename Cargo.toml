@@ -1,8 +1,9 @@
-[package]
-name = "diorama-example"
-version = "0.1.0"
-authors = ["Yang Keao <keao.yang@yahoo.com>"]
-edition = "2018"
+[workspace]
+members = [
+    "diorama",
+    "diorama-derive",
+    "diorama-core"
+]
 
 [dependencies]
 diorama = { path = "./diorama" }

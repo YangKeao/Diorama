@@ -8,9 +8,8 @@ edition = "2018"
 syn = "0.15"
 quote = "0.6"
 proc-macro2 = "0.4"
-reqwest = "0.9.2"
 parse_utils = { path = "../diorama_utils/parse_utils" }
-diorama_core = {path = "../diorama-core"}
+diorama_core = { path = "../diorama-core" }
 
 [lib]
 crate-type = ["proc-macro"]
