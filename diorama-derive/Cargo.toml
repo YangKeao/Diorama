@@ -1,5 +1,5 @@
 [package]
-name = "diorama_derive"
+name = "diorama-derive"
 version = "0.1.0"
 authors = ["Yang Keao <keao.yang@yahoo.com>"]
 edition = "2018"
@@ -8,8 +8,8 @@ edition = "2018"
 syn = "0.15"
 quote = "0.6"
 proc-macro2 = "0.4"
-parse_utils = { path = "../diorama-utils/parse-utils" }
-diorama_core = { path = "../diorama-core" }
+parse-utils = { path = "../diorama-utils/parse-utils" }
+diorama-core = { path = "../diorama-core" }
 
 [lib]
 crate-type = ["proc-macro"]

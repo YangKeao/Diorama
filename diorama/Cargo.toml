@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Yang Keao <keao.yang@yahoo.com>"]
 edition = "2018"
 
-[dependencies]
-diorama_core = { path = "../diorama-core" }
-diorama_derive = { path = "../diorama-derive" }
+[dev-dependencies]
 reqwest = "0.9.2"
+diorama-core = { path = "../diorama-core" }
+diorama-derive = { path = "../diorama-derive" }
